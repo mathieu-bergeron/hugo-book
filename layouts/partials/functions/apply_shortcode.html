@@ -1,0 +1,23 @@
+{{- define "apply_shortcode" -}}
+    {{ $base_path := .Get "base_path" }}
+    {{ $shortcode := .Get "shortcode" }}
+    {{ $segments := split $shortcode " " }}
+    {{ $shortcode_name := index $segments 1 }}
+    {{ if eq $shortcode_name "include" }}
+        {{ $src := replace (index $segments 2) "\"" "" }}
+        {{ $params := newScratch }}
+        {{ $params.Set "src" $src }}
+        {{ $params.Set "base_path" $base_path }}
+<!-- -->{{ template "include" $params }}
+    {{ else if eq $shortcode_name "video" }}
+        {{ $src := replace (index $segments 2) "\"" "" }}
+        {{ $width := replace (index $segments 3) "\"" "" }}
+        {{ $params := newScratch }}
+        {{ $params.Set "src" $src }}
+        {{ $params.Set "width" $width }}
+        {{ $params.Set "base_path" $base_path }}
+<!-- -->{{ template "video" $params }}
+    {{ else }}
+<!-- -->
+    {{ end }}
+{{- end -}}

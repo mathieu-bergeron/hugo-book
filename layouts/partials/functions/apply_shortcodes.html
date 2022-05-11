@@ -1,0 +1,17 @@
+{{- define "apply_shortcodes" -}}
+    {{ $shortcodes := .Get "shortcodes" }}
+    {{ $base_path := .Get "base_path" }}
+    {{ $line := .Get "line" }}
+    {{ $line = replaceRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" "¤" $line }}
+    {{ $text_nodes := split $line "¤" }}
+    {{ range $index, $shortcode := $shortcodes }}
+        {{ $text_node := index $text_nodes $index }}
+<!-- -->{{ $text_node | safeHTML }}
+        {{ $params := newScratch }}
+        {{ $params.Set "base_path" $base_path }}
+        {{ $params.Set "shortcode" $shortcode }}
+<!-- -->{{ template "apply_shortcode" $params }}
+    {{ end }}
+    {{ $text_node := index $text_nodes (len $shortcodes) }}
+<!-- -->{{ $text_node | safeHTML }}
+{{- end -}}

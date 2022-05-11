@@ -1,11 +1,13 @@
-{{ $file := .Get 0  }}
+{{ $base_path := $.Page.File.Dir }}
+{{ $file_path := .Get 0 }}
+{{ $full_file_path := (path.Join $base_path $file_path) }}
 
-{{ if strings.HasSuffix $file ".html" }}
+{{ if strings.HasSuffix $full_file_path ".html" }}
 
-{{  $file  | readFile  | safeHTML }}
+{{  $full_file_path  | readFile  | safeHTML }}
 
-{{ else if strings.HasSuffix $file ".md" }}
+{{ else if strings.HasSuffix $full_file_path ".md" }}
 
-{{  $file  | readFile  | safeHTML  }}
+{{  $full_file_path  | readFile  | safeHTML  }}
 
 {{ end }}

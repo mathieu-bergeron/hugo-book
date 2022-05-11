@@ -22,6 +22,22 @@
 
 </div>
 
+
+<br>
+
+<div style="float:right;">
+    <div style="float:right;">
+        <a ref="" href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" style="font-size:2em;">
+        <img alt="Creative Commons License" style="border-width:0" src="/cc.svg" /></a>
+        <a ref="" href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" style="font-size:2em;">
+        <img alt="Creative Commons Attribution" style="border-width:0" src="/by.svg" /></a>
+        <a ref="" href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" style="font-size:2em;">
+        <img alt="Creative Commons ShareAlike" style="border-width:0" src="/sa.svg" /></a>
+    </div>
+</div>
+
+
+
 {{ $script := resources.Get "clipboard.js" | resources.Minify }}
 {{ with $script.Content }}
   <script>{{ . | safeJS }}</script>

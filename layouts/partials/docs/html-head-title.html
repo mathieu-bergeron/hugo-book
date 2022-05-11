@@ -1,1 +1,11 @@
-{{ partial "docs/title" . }} | {{ .Site.Title -}}
+
+{{ if .Page.Title }}
+
+    {{ partial "docs/title" . }} 
+
+{{ else }}
+
+    {{ .Site.Title -}}
+
+{{ end }}
+

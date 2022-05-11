@@ -1,13 +1,23 @@
 {{ $base_path := $.Page.File.Dir }}
 {{ $file_path := .Get 0 }}
 {{ $full_file_path := (path.Join $base_path $file_path) }}
-
-{{ if strings.HasSuffix $full_file_path ".html" }}
-
-{{  $full_file_path  | readFile  | safeHTML }}
-
-{{ else if strings.HasSuffix $full_file_path ".md" }}
-
-{{  $full_file_path  | readFile  | safeHTML  }}
-
+{{ $full_file_path := (path.Join $base_path $file_path) }}
+{{ $file_content := $full_file_path | readFile }}
+{{ $lines := split $file_content "\n" }}
+{{ $result := newScratch }}
+{{ $ignore_line := false }}
+{{ $start_stop_ignoring := false }}
+{{ range $index, $line := $lines }}
+    {{ $start_stop_ignoring = false }}
+    {{ if hasPrefix $line "---" }}
+        {{ $start_stop_ignoring = true }}
+    {{ end }}
+    {{ if and (not $ignore_line) (not $start_stop_ignoring) }}
+        {{ $result.Add "content" $line }}
+        {{ $result.Add "content" "\n" }}
+    {{ end }}
+    {{ if $start_stop_ignoring }}
+        {{ $ignore_line = not $ignore_line }}
+    {{ end }}
 {{ end }}
+{{ $result.Get "content" | safeHTML }}

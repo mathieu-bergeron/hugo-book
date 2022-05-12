@@ -18,7 +18,6 @@
     {{ if and (not $ignore_line) (not $start_stop_ignoring) }}
     {{ $shortcodes := findRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" $line }}
         {{ if gt (len $shortcodes) 0 }}
-            {{ warnf "%s" ($html_content.Get "lines") }}
             {{ $html_content.Get "lines" | safeHTML }}
             {{ $html_content.Set "lines" "" }}
             {{ $params := newScratch }}

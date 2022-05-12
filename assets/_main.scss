@@ -76,8 +76,9 @@ ul.pagination {
 }
 
 .container {
+  display:flex;
   max-width: $container-max-width;
-  margin: 0 auto;
+  justify-content: space-between;
 }
 
 .book-icon {
@@ -162,6 +163,7 @@ body[dir="rtl"] .book-menu {
 
 .book-page {
   min-width: $body-min-width;
+  max-width: 60rem;
   flex-grow: 1;
   padding: $padding-16;
 }

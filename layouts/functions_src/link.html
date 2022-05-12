@@ -2,7 +2,6 @@
 {{ $src := .Get "src" }}
 {{ if not (hasPrefix $src "/") }}
     {{ $base_path := .Get "base_path" }}
-    {{ warnf "$base_path: %s" $base_path }}
     {{ $src = (path.Join "/" (path.Join $base_path $src)) }}
 {{ end }}
 {{ $text := .Get "text" }}

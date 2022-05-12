@@ -2,7 +2,7 @@
 
 for i in *.html;
 do
-    target=../partials/functions/$i
+    target=../layouts/shortcodes/$i
     cp $i $target
 done
 

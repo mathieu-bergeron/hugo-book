@@ -1,5 +1,20 @@
 {{- define "embed" -}}
 {{ $src := .Get "src" }}
+{{ $indent := 0 }}
+{{ if not (eq (.Get "indent") "") }}
+    {{ $indent = int (.Get "indent") }}
+{{ end }}
+{{ $first_line := 0 }}
+{{ if not (eq (.Get "first_line") "") }}
+    {{ $first_line = int (.Get "first_line") }}
+{{ end }}
+{{ $last_line := 0 }}
+{{ if not (eq (.Get "last_line") "") }}
+    {{ $last_line = int (.Get "last_line") }}
+{{ end }}
+{{ warnf "embed.$indent: %d" $indent }}
+{{ warnf "embed.$first_line: %d" $first_line }}
+{{ warnf "embed.$last_line: %d" $last_line }}
 {{ if not (hasPrefix $src "/") }}
     {{ $base_path := .Get "base_path" }}
     {{ $src = (path.Join $base_path $src) }}
@@ -10,24 +25,29 @@
 {{ $start_stop_ignoring := false }}
 {{ $html_content := newScratch }}
 {{ $html_content.Set "lines" "" }}
+{{ $line_number := 0 }}
 {{ range $index, $line := $lines }}
     {{ $start_stop_ignoring = false }}
     {{ if hasPrefix $line "---" }}
         {{ $start_stop_ignoring = true }}
     {{ end }}
     {{ if and (not $ignore_line) (not $start_stop_ignoring) }}
-    {{ $shortcodes := findRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" $line }}
-        {{ if gt (len $shortcodes) 0 }}
-            {{ $html_content.Get "lines" | safeHTML }}
-            {{ $html_content.Set "lines" "" }}
-            {{ $params := newScratch }}
-            {{ $params.Set "base_path" (path.Dir $src) }}
-            {{ $params.Set "line" $line }}
-            {{ $params.Set "shortcodes" $shortcodes }}
-            {{ template "apply_shortcodes" $params }}
-        {{ else }}
-            {{ $html_content.Add "lines" $line }}
-            {{ $html_content.Add "lines" "\n" }}
+        {{ $line_number = add $line_number 1 }}
+        {{ if and (or (eq $first_line 0) (ge $line_number $first_line)) (or (eq $last_line 0) (le $line_number $last_line)) }}
+            {{ $shortcodes := findRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" $line }}
+            {{ if gt (len $shortcodes) 0 }}
+                {{ $html_content.Get "lines" | safeHTML }}
+                {{ $html_content.Set "lines" "" }}
+                {{ $params := newScratch }}
+                {{ $params.Set "base_path" (path.Dir $src) }}
+                {{ $params.Set "line" $line }}
+                {{ $params.Set "shortcodes" $shortcodes }}
+                {{ $params.Set "indent" $indent }}
+                {{ template "apply_shortcodes" $params }}
+            {{ else }}
+                {{ $html_content.Add "lines" $line }}
+                {{ $html_content.Add "lines" "\n" }}
+            {{ end }}
         {{ end }}
     {{ end }}
     {{ if $start_stop_ignoring }}

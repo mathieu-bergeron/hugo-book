@@ -1,1 +1,1 @@
-{{ $params := newScratch }}{{ $params.Set "src" (.Get 0) }}{{ $params.Set "base_path" ($.Page.File.Dir) }}{{ template "embed" $params }}
+{{ $params := newScratch }}{{ $params.Set "src" (.Get "src") }}{{ $params.Set "indent" (.Get "indent") }}{{ $params.Set "first_line" (.Get "first-line") }}{{ $params.Set "last_line" (.Get "last-line") }}{{ $params.Set "base_path" ($.Page.File.Dir) }}{{ template "embed" $params }}

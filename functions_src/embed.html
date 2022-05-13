@@ -23,8 +23,6 @@
 {{ $lines := split $file_content "\n" }}
 {{ $ignore_line := false }}
 {{ $start_stop_ignoring := false }}
-{{ $html_content := newScratch }}
-{{ $html_content.Set "lines" "" }}
 {{ $line_number := 0 }}
 {{ range $index, $line := $lines }}
     {{ $start_stop_ignoring = false }}
@@ -36,8 +34,6 @@
         {{ if and (or (eq $first_line 0) (ge $line_number $first_line)) (or (eq $last_line 0) (le $line_number $last_line)) }}
             {{ $shortcodes := findRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" $line }}
             {{ if gt (len $shortcodes) 0 }}
-                {{ $html_content.Get "lines" | safeHTML }}
-                {{ $html_content.Set "lines" "" }}
                 {{ $params := newScratch }}
                 {{ $params.Set "base_path" (path.Dir $src) }}
                 {{ $params.Set "line" $line }}
@@ -45,8 +41,11 @@
                 {{ $params.Set "indent" $indent }}
                 {{ template "apply_shortcodes" $params }}
             {{ else }}
-                {{ $html_content.Add "lines" $line }}
-                {{ $html_content.Add "lines" "\n" }}
+                {{ range $num := (seq $indent) }}
+                    {{ print "    " | safeHTML }}
+                {{ end }}
+                {{ $line | safeHTML }}
+                {{ print "\n" | safeHTML }}
             {{ end }}
         {{ end }}
     {{ end }}
@@ -54,5 +53,4 @@
         {{ $ignore_line = not $ignore_line }}
     {{ end }}
 {{ end }}
-{{ $html_content.Get "lines" | safeHTML }}
 {{- end -}}

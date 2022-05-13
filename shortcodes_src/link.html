@@ -1,5 +1,17 @@
 {{ $params := newScratch }}
-{{ $params.Set "src" (.Get 0) }}
-{{ $params.Set "text" (.Get 1) }}
+
+{{ $src := .Get 0 }}
+{{ if not $src }}
+    {{ $src = .Get "href" }}
+{{ end }}
+{{ $params.Set "src" $src }}
+
+{{ $text := .Get 1 }}
+{{ if not $text }}
+    {{ $text = .Get "text" }}
+{{ end }}
+{{ $params.Set "text" $text }}
+
 {{ $params.Set "base_path" ($.Page.File.Dir) }}
+
 {{ template "link" $params }}

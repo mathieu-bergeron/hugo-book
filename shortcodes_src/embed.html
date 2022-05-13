@@ -1,7 +1,17 @@
 {{ $params := newScratch }}
-{{ $params.Set "src" (.Get "src") }}
+
+{{ $src := .Get 0 }}
+{{ if not $src }}
+    {{ $src = .Get "src" }}
+{{ end }}
+{{ $params.Set "src" $src }}
+
 {{ $params.Set "indent" (.Get "indent") }}
+
 {{ $params.Set "first_line" (.Get "first-line") }}
+
 {{ $params.Set "last_line" (.Get "last-line") }}
+
 {{ $params.Set "base_path" ($.Page.File.Dir) }}
+
 {{ template "embed" $params }}

@@ -12,9 +12,6 @@
 {{ if not (eq (.Get "last_line") "") }}
     {{ $last_line = int (.Get "last_line") }}
 {{ end }}
-{{ warnf "embed.$indent: %d" $indent }}
-{{ warnf "embed.$first_line: %d" $first_line }}
-{{ warnf "embed.$last_line: %d" $last_line }}
 {{ if not (hasPrefix $src "/") }}
     {{ $base_path := .Get "base_path" }}
     {{ $src = (path.Join $base_path $src) }}
@@ -22,16 +19,24 @@
 {{ $file_content := $src | readFile }}
 {{ $lines := split $file_content "\n" }}
 {{ $ignore_line := false }}
-{{ $start_stop_ignoring := false }}
+{{ $start_stop_ignoring_header := false }}
 {{ $line_number := 0 }}
+{{ $first_printed_line := true }}
 {{ range $index, $line := $lines }}
-    {{ $start_stop_ignoring = false }}
+    {{ $start_stop_ignoring_header = false }}
     {{ if hasPrefix $line "---" }}
-        {{ $start_stop_ignoring = true }}
+        {{ $start_stop_ignoring_header = true }}
     {{ end }}
-    {{ if and (not $ignore_line) (not $start_stop_ignoring) }}
+    {{ if and (not $ignore_line) (not $start_stop_ignoring_header) }}
         {{ $line_number = add $line_number 1 }}
         {{ if and (or (eq $first_line 0) (ge $line_number $first_line)) (or (eq $last_line 0) (le $line_number $last_line)) }}
+            {{ if not ($first_printed_line) }}
+                {{ range $num := (seq $indent) }}
+                    {{ "    " }}
+                {{ end }}
+            {{ else }}
+                {{ $first_printed_line = false }}
+            {{ end }}
             {{ $shortcodes := findRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" $line }}
             {{ if gt (len $shortcodes) 0 }}
                 {{ $params := newScratch }}
@@ -41,15 +46,12 @@
                 {{ $params.Set "indent" $indent }}
                 {{ template "apply_shortcodes" $params }}
             {{ else }}
-                {{ range $num := (seq $indent) }}
-                    {{ print "    " | safeHTML }}
-                {{ end }}
                 {{ $line | safeHTML }}
-                {{ print "\n" | safeHTML }}
+                {{ "\n" | safeHTML }}
             {{ end }}
         {{ end }}
     {{ end }}
-    {{ if $start_stop_ignoring }}
+    {{ if $start_stop_ignoring_header }}
         {{ $ignore_line = not $ignore_line }}
     {{ end }}
 {{ end }}

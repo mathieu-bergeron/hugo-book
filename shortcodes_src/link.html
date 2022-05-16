@@ -1,5 +1,6 @@
 {{ $params := newScratch }}
 
+
 {{ $src := .Get 0 }}
 {{ if not $src }}
     {{ $src = .Get "href" }}
@@ -12,6 +13,9 @@
 {{ end }}
 {{ $params.Set "text" $text }}
 
-{{ $params.Set "base_path" ($.Page.File.Dir) }}
+{{ $params.Set "base_path" $.Page.File.Dir }}
+
+{{ $params.Set "extraDir" .Page.Site.Params.extraDir }}
+{{ $params.Set "extras" .Page.Site.Params.extras  }}
 
 {{ template "link" $params }}

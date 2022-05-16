@@ -1,0 +1,10 @@
+{{- define "src" -}}
+{{ $src := .Get "src" }}
+{{ $src = path.Clean $src }}
+{{ $extraDir := .Get "extraDir" }}
+{{ $extras := .Get "extras" }}
+{{ warnf "%s" $extraDir }}
+{{ $pattern := printf "^/%s" $extraDir }}
+{{ $src = replaceRE $pattern "" $src 1 }}
+{{ $src | safeHTML }}
+{{- end -}}

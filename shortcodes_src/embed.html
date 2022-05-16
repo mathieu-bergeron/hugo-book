@@ -14,4 +14,7 @@
 
 {{ $params.Set "base_path" ($.Page.File.Dir) }}
 
+{{ $params.Set "extraDir" .Page.Site.Params.extraDir }}
+{{ $params.Set "extras" .Page.Site.Params.extras  }}
+
 {{ template "embed" $params }}

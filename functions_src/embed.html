@@ -1,4 +1,6 @@
 {{- define "embed" -}}
+{{ $extraDir := .Get "extraDir" }}
+{{ $extras := .Get "extras" }}
 {{ $src := .Get "src" }}
 {{ $indent := 0 }}
 {{ if not (eq (.Get "indent") "") }}
@@ -44,6 +46,8 @@
                 {{ $params.Set "line" $line }}
                 {{ $params.Set "shortcodes" $shortcodes }}
                 {{ $params.Set "indent" $indent }}
+                {{ $params.Set "extraDir" $extraDir }}
+                {{ $params.Set "extras" $extras }}
                 {{ template "apply_shortcodes" $params }}
             {{ else }}
                 {{ $line | safeHTML }}

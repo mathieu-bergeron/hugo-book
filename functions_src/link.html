@@ -10,5 +10,6 @@
     {{ $filename := path.Base $src }}
     {{ $download = printf "download=\"%s\"" $filename }}
 {{ end }}
-<a href="{{$src}}" {{ $download | safeHTMLAttr }} >{{$text}}</a>
+{{ .Set "src" $src }}
+<a href='{{ template "src" . }}' {{ $download | safeHTMLAttr }} >{{$text}}</a>
 {{- end -}}

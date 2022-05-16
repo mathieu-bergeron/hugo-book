@@ -1,4 +1,6 @@
 {{- define "apply_shortcode" -}}
+    {{ $extraDir := .Get "extraDir" }}
+    {{ $extras := .Get "extras" }}
     {{ $base_path := .Get "base_path" }}
     {{ $shortcode := .Get "shortcode" }}
     {{ $shortcode_name := findRE "{{%[ ]+[^ ]+[ ]" $shortcode }}
@@ -30,6 +32,8 @@
         {{ $params.Set "text" $text }}
         {{ $params.Set "download" $download }}
         {{ $params.Set "base_path" $base_path }}
+        {{ $params.Set "extraDir" $extraDir }}
+        {{ $params.Set "extras" $extras }}
         {{ template "link" $params }}
     {{ end }}
 {{- end -}}

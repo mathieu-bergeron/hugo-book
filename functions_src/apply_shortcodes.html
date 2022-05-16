@@ -1,4 +1,6 @@
 {{- define "apply_shortcodes" -}}
+    {{ $extraDir := .Get "extraDir" }}
+    {{ $extras := .Get "extras" }}
     {{ $shortcodes := .Get "shortcodes" }}
     {{ $base_path := .Get "base_path" }}
     {{ $line := .Get "line" }}
@@ -10,6 +12,8 @@
         {{ $params := newScratch }}
         {{ $params.Set "base_path" $base_path }}
         {{ $params.Set "shortcode" $shortcode }}
+        {{ $params.Set "extraDir" $extraDir }}
+        {{ $params.Set "extras" $extras }}
         {{ template "apply_shortcode" $params }}
     {{ end }}
     {{ $text_node := index $text_nodes (len $shortcodes) }}

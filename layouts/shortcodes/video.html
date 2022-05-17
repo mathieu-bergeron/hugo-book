@@ -1,1 +1,5 @@
-{{ $params := newScratch }}{{ $params.Set "src" (.Get 0) }}{{ $params.Set "width" (.Get 1) }}{{ $params.Set "base_path" ($.Page.File.Dir) }}{{ template "video" $params }}
+{{ $params := newScratch }}
+{{ $params.Set "src" (.Get 0) }}
+{{ $params.Set "width" (.Get 1) }}
+{{ $params.Set "base_path" ($.Page.File.Dir) }}
+{{ template "video" $params }}

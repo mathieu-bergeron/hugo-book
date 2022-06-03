@@ -6,7 +6,11 @@
     {{ $args := findRE "\"([^\"]+)\"" $shortcode }}
     {{ if eq $shortcode_name "embed" }}
         {{ $src := trim (index $args 0) "\"\"" }}
+        {{ $first_line := trim (index $args 1) "\"\"" }}
+        {{ $last_line := trim (index $args 2) "\"\"" }}
         {{ $params.Set "src" $src }}
+        {{ $params.Set "first_line" $first_line }}
+        {{ $params.Set "last_line" $last_line }}
         {{ template "embed" $params }}
     {{ else if eq $shortcode_name "video" }}
         {{ $src := trim (index $args 0) "\"\"" }}

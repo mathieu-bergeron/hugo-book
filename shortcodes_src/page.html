@@ -15,6 +15,12 @@
 
 {{ printf "# %s\n" $data.title | safeHTML }}
 
+{{ range $section := $data.sections }}
+    {{ printf "## %s\n" $section.title | safeHTML }}
+    {{ "\n" | safeHTML }}
+    {{ $section.content | safeHTML }}
+{{ end }}
+
 {{ $keys = split $data.embed "." }}
 {{ $data = .Site.Data }}
 {{ range $key := $keys }}

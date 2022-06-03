@@ -1,10 +1,1 @@
-<dl>
-{{ range .Page.Pages }}
-  <dt>
-    <a href="{{ .RelPermalink }}">{{ partial "docs/title" . }}</a>
-  </dt>
-  <dd class="markdown-inner">
-    {{ default .Summary .Description }}
-  </dd>
-{{ end }}
-</dl>
+{{ $src := .Get 0 }}{{ if not $src }}{{ $src = .Get "src" }}{{ end }}{{ $src = path.Join "main" (path.Dir .Page.File) $src }}{{ $data := getJSON $src }}

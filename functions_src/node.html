@@ -6,19 +6,43 @@
 
     {{ $keys := split $src "." }}
     {{ range $key := $keys }}
-        {{ warnf $key }}
         {{ $data = index $data $key }}
     {{ end }}
 
-    {{ printf "# %s\n" $data.title | markdownify | safeHTML }}
+    {{ if $data }}
 
-    {{ printf "<div>" | safeHTML }}
-    {{ printf "%s" $data.summary | markdownify | safeHTML }}
-    {{ printf "</div>" | safeHTML }}
+        {{ printf "# %s\n" $data.title | markdownify | safeHTML }}
 
-    {{ range $child := $data.children }}
-        {{ $params.Set "src" $child }}
-        {{ template "node" $params }}
+        {{ if $data.summary }}
+            {{ printf "<div>" | safeHTML }}
+            {{ printf "%s" $data.summary | markdownify | safeHTML }}
+            {{ printf "</div>" | safeHTML }}
+        {{ end }}
+
+        {{ if $data.children }}
+            {{ range $child := $data.children }}
+                {{ if reflect.IsMap $child }}
+                    {{ if $child.title }}
+                        {{ printf "# %s\n" $child.title | markdownify | safeHTML }}
+                    {{ end }}
+                {{ else }}
+                    {{ $lines := split $child "\n" }}
+                    {{ $firstLine := index $lines 0 }}
+                    {{ if and (eq (len $lines) 1) (findRE "^[[:space:]]*[[:word:]]+([.][[:word:]]+)*$" $firstLine) }}
+                        {{ $params.Set "src" $child }}
+                        {{ template "node" $params }}
+                    {{ else }}
+                        {{ printf "%s\n" $child | markdownify | safeHTML }}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+
+    {{ else }}
+
+        {{ printf "%s\n" $src | markdownify | safeHTML }}
+
     {{ end }}
+
 
 {{- end -}}

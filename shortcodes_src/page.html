@@ -6,28 +6,8 @@
 {{ end }}
 {{ $params.Set "src" $src }}
 
-{{ $keys := split $src "." }}
-{{ $data := .Site.Data }}
-{{ range $key := $keys }}
-    {{ warnf $key }}
-    {{ $data = index $data $key }}
-{{ end }}
+{{ $params.Set "data" .Site.Data }}
 
-{{ printf "# %s\n" $data.title | safeHTML }}
-
-{{ range $section := $data.sections }}
-    {{ printf "## %s\n" $section.title | safeHTML }}
-    {{ "\n" | safeHTML }}
-    {{ $section.content | safeHTML }}
-{{ end }}
-
-{{ $keys = split $data.embed "." }}
-{{ $data = .Site.Data }}
-{{ range $key := $keys }}
-    {{ warnf $key }}
-    {{ $data = index $data $key }}
-{{ end }}
-
-{{ $data | safeHTML }}
+{{ template "node" $params }}
 
 

@@ -1,0 +1,24 @@
+{{- define "node" -}}
+    {{ $params := . }}
+
+    {{ $src := .Get "src" }}
+    {{ $data := .Get "data" }}
+
+    {{ $keys := split $src "." }}
+    {{ range $key := $keys }}
+        {{ warnf $key }}
+        {{ $data = index $data $key }}
+    {{ end }}
+
+    {{ printf "# %s\n" $data.title | markdownify | safeHTML }}
+
+    {{ printf "<div>" | safeHTML }}
+    {{ printf "%s" $data.summary | markdownify | safeHTML }}
+    {{ printf "</div>" | safeHTML }}
+
+    {{ range $child := $data.children }}
+        {{ $params.Set "src" $child }}
+        {{ template "node" $params }}
+    {{ end }}
+
+{{- end -}}

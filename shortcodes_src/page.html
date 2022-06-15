@@ -6,8 +6,8 @@
 {{ end }}
 {{ $params.Set "src" $src }}
 
-{{ $params.Set "data" .Site.Data }}
+{{ $data := .Site.Data }}
 
-{{ template "node" $params }}
+{{ $params.Set "data" $data }}
 
-
+{{ template "load_and_render_node" $params }}

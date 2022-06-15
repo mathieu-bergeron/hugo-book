@@ -1,0 +1,56 @@
+{{- define "render_node" -}}
+    {{ $params := . }}
+    {{ $node := $params.Get "node" }}
+    {{ $line := "" }}
+
+    {{ if $node.title }}
+        {{ $line = printf "# %s" $node.title }}
+        {{ $params.Set "line" $line }}
+        {{ template "render_line" $params }} 
+    {{ end }}
+
+    {{ if $node.summary }}
+        {{ $line = printf "{{%s summary \"%s\" %s}}" "%" $node.summary "%" }}
+        {{ $params.Set "line" $line }}
+        {{ template "render_line" $params }} 
+    {{ end }}
+
+    {{ if $node.text }}
+        {{ $lines := split $node.text "\n" }}
+        {{ range $text_line := $lines }}
+            {{ $params.Set "line" $text_line }}
+            {{ template "render_line" $params }}
+        {{ end }}
+    {{ end }}
+
+    {{ if $node.children }}
+        {{ range $child := $node.children }}
+
+            {{ if reflect.IsMap $child }}
+
+                {{ $params.Set "node" $child }}
+                {{ template "render_node" $params }}
+
+            {{ else }}
+
+                {{ $lines := split $child "\n" }}
+                {{ $firstLine := index $lines 0 }}
+                {{ if and (eq (len $lines) 1) (findRE "^[[:space:]]*[[:word:]]+([.][[:word:]]+)*$" $firstLine) }}
+
+                    {{ $params.Set "src" $firstLine }}
+                    {{ template "load_and_render_node" $params }}
+                    {{ "\n" | safeHTML }}
+
+                {{ else }}
+
+                    {{ $line = printf "* %s" $child }}
+                    {{ $params.Set "line" $line }}
+                    {{ template "render_line" $params }} 
+
+                {{ end }}
+
+            {{ end }}
+        {{ end }}
+    {{ end }}
+
+{{- end -}}

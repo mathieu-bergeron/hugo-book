@@ -29,5 +29,9 @@
         {{ $params.Set "text" $text }}
         {{ $params.Set "download" $download }}
         {{ template "link" $params }}
+    {{ else if eq $shortcode_name "summary" }}
+        {{ $text := trim (index $args 0) "\"\"" }}
+        {{ $params.Set "text" $text }}
+        {{ template "summary" $params }}
     {{ end }}
 {{- end -}}

@@ -1,0 +1,14 @@
+{{- define "render_line" -}}
+    {{ $params := . }}
+    {{ $line := $params.Get "line" }}
+    {{ $shortcodes := findRE "{{%([^%]|[^%][^}]|[^%][^}][^}])*%}}" $line }}
+    {{ if gt (len $shortcodes) 0 }}
+        {{ $params.Set "line" $line }}
+        {{ $params.Set "shortcodes" $shortcodes }}
+        {{ template "apply_shortcodes" $params }}
+    {{ else }}
+        {{ $line | safeHTML }}
+        {{ "\n" | safeHTML }}
+    {{ end }}
+
+{{- end -}}

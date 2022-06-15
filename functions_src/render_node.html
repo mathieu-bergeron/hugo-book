@@ -2,9 +2,13 @@
     {{ $params := . }}
     {{ $node := $params.Get "node" }}
     {{ $line := "" }}
+    {{ $titleLevel := $params.Get "titleLevel" }}
 
     {{ if $node.title }}
-        {{ $line = printf "# %s" $node.title }}
+        {{ range $i := (seq $titleLevel) }}
+            {{ $line = printf "#%s" $line }}
+        {{ end }}
+        {{ $line = printf "%s %s" $line $node.title }}
         {{ $params.Set "line" $line }}
         {{ template "render_line" $params }} 
     {{ end }}
@@ -38,6 +42,7 @@
                 {{ if and (eq (len $lines) 1) (findRE "^[[:space:]]*[[:word:]]+([.][[:word:]]+)*$" $firstLine) }}
 
                     {{ $params.Set "src" $firstLine }}
+                    {{ $params.Set "titleLevel" (add $titleLevel 1) }}
                     {{ template "load_and_render_node" $params }}
                     {{ "\n" | safeHTML }}
 
